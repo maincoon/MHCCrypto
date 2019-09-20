@@ -21,9 +21,30 @@ namespace MHCCrypto {
 		/// <summary>
 		/// Check endiannes and encode value
 		/// </summary>
+		public static byte[] LE(ushort value) {
+			if (!BitConverter.IsLittleEndian) {
+				value = (ushort)IPAddress.NetworkToHostOrder(value);
+			}
+			return BitConverter.GetBytes(value);
+		}
+
+		/// <summary>
+		/// Check endiannes and encode value
+		/// </summary>
 		public static byte[] LE(int value) {
 			if (!BitConverter.IsLittleEndian) {
 				value = IPAddress.NetworkToHostOrder(value);
+			}
+			return BitConverter.GetBytes(value);
+		}
+
+
+		/// <summary>
+		/// Check endiannes and encode value
+		/// </summary>
+		public static byte[] LE(uint value) {
+			if (!BitConverter.IsLittleEndian) {
+				value = (uint)IPAddress.NetworkToHostOrder(value);
 			}
 			return BitConverter.GetBytes(value);
 		}
@@ -41,7 +62,7 @@ namespace MHCCrypto {
 		/// <summary>
 		/// Encode up to int64 values no negative numbers
 		/// </summary>
-		public static byte[] Encode(long value) {
+		public static byte[] Encode(decimal value) {
 			if (value <= 249) {
 				return new byte[] {
 					(byte) value
@@ -50,22 +71,22 @@ namespace MHCCrypto {
 			if (value <= ushort.MaxValue) {
 				return new byte[] {
 					0xfa
-				}.Concat(LE((short)value)).ToArray();
+				}.Concat(LE((ushort)value)).ToArray();
 			}
 			if (value <= uint.MaxValue) {
 				return new byte[] {
 					0xfb
-				}.Concat(LE((int)value)).ToArray();
+				}.Concat(LE((uint)value)).ToArray();
 			}
 			return new byte[] {
 				0xfc
-			}.Concat(LE(value)).ToArray();
+			}.Concat(LE((long)value)).ToArray();
 		}
 
 		/// <summary>
 		/// Encode transaction values
 		/// </summary>
-		public static byte[] Encode(string to, long value, long fee, int nonce, string data) {
+		public static byte[] Encode(string to, decimal value, decimal fee, int nonce, string data) {
 			// following field values are given for signature: to, value, fee, nonce, data counter, data
 			byte[] encoded = Hex.Decode(to.Substring(2));
 			encoded = encoded.
